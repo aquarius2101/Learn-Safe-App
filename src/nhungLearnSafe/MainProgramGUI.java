@@ -67,7 +67,7 @@ public class MainProgramGUI extends javax.swing.JFrame {
         progressBTN = new javax.swing.JButton();
         logoutBTN = new javax.swing.JButton();
         quitBTN = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        deleteAccBTN = new javax.swing.JButton();
         guideIcon = new javax.swing.JLabel();
         guideBTN = new javax.swing.JButton();
         searchQuizPN = new javax.swing.JPanel();
@@ -236,12 +236,12 @@ public class MainProgramGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 0, 0));
-        jButton1.setText("Delete account");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        deleteAccBTN.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        deleteAccBTN.setForeground(new java.awt.Color(255, 0, 0));
+        deleteAccBTN.setText("Delete account");
+        deleteAccBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                deleteAccBTNActionPerformed(evt);
             }
         });
 
@@ -261,7 +261,7 @@ public class MainProgramGUI extends javax.swing.JFrame {
                     .addComponent(certFireBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(deleteBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deleteAccBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 20, Short.MAX_VALUE))
         );
         accountPNLayout.setVerticalGroup(
@@ -276,7 +276,7 @@ public class MainProgramGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteBTN)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(deleteAccBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -475,49 +475,37 @@ public class MainProgramGUI extends javax.swing.JFrame {
 
     private void certFireBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_certFireBTNActionPerformed
         //check if user has any certificate
-        if (loggedInUser.getFloodScore()==null){
-            if (loggedInUser.getFireScore()==null || !loggedInUser.getFireScore().equals("5")){
-                displayTA.setText("You have no certificate to display");
-            } else {
-                CertificateGUI cert = new CertificateGUI(loggedInUser, new FireQuiz());
-                cert.setVisible(true);
-                this.setVisible(false);
-            }
-        } else if (loggedInUser.getFireScore()==null){
-            if (loggedInUser.getFloodScore()==null || !loggedInUser.getFloodScore().equals("5")){
-                displayTA.setText("You have no certificate to display");
-            } else {
-                CertificateGUI cert = new CertificateGUI(loggedInUser, new FloodQuiz());
-                cert.setVisible(true);
-                this.setVisible(false);
-            }
-        } else {    // no null in user's scores
-            if (loggedInUser.getFireScore().equals("5") & loggedInUser.getFloodScore().equals("5")){
-                String[] options = { "Fire", "Flood" };
-                var selection = JOptionPane.showOptionDialog(null, "Select certificate you want to display", "Choose certificate", 
+        if(!loggedInUser.getFireScore().equals("5") && !loggedInUser.getFloodScore().equals("5")){
+            displayTA.setText("You have no certificate to display");
+        }
+        
+        //if user only has Fire certificate
+        if(loggedInUser.getFireScore().equals("5") && !loggedInUser.getFloodScore().equals("5")){
+            CertificateGUI cert = new CertificateGUI(loggedInUser, new FireQuiz());
+            cert.setVisible(true);
+            this.setVisible(false);
+            
+            // if user only has Flood certificate
+        }else if(!loggedInUser.getFireScore().equals("5") && loggedInUser.getFloodScore().equals("5")){
+            CertificateGUI cert = new CertificateGUI(loggedInUser, new FloodQuiz());
+            cert.setVisible(true);
+            this.setVisible(false);
+        }else{
+            String[] options = { "Fire", "Flood" };
+            var selection = JOptionPane.showOptionDialog(null, "Select certificate you want to display", "Choose certificate", 
                                                              0, 2, null, options, options[0]);
-                if (selection == 0) {   //options[0] = Fire
-                    CertificateGUI cert = new CertificateGUI(loggedInUser, new FireQuiz());
-                    cert.setVisible(true);
-                    this.setVisible(false);
-                }
-                if (selection == 1) {   //options[1] = Flood
-                    CertificateGUI cert = new CertificateGUI(loggedInUser, new FloodQuiz());
-                    cert.setVisible(true);
-                    this.setVisible(false);
-                }
-            } else if (loggedInUser.getFireScore().equals("5")) {
+            if (selection == 0) {   //options[0] = Fire
                 CertificateGUI cert = new CertificateGUI(loggedInUser, new FireQuiz());
                 cert.setVisible(true);
                 this.setVisible(false);
-            } else if (loggedInUser.getFloodScore().equals("5")){
+            }
+            if (selection == 1) {   //options[1] = Flood
                 CertificateGUI cert = new CertificateGUI(loggedInUser, new FloodQuiz());
                 cert.setVisible(true);
                 this.setVisible(false);
-            } else {
-                displayTA.setText("You have no certificate to display");
             }
         }
+
     }//GEN-LAST:event_certFireBTNActionPerformed
 
     private void quitBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitBTNActionPerformed
@@ -531,10 +519,10 @@ public class MainProgramGUI extends javax.swing.JFrame {
         var selection = JOptionPane.showOptionDialog(null, "Delete score", "Which quiz score do you want to delete?", 
                                                      0, 2, null, options, options[0]);
         if (selection == 0) {   //options[0] = Fire
-            loggedInUser.setFireScore(null);
+            loggedInUser.setFireScore("null");
         }
         if (selection == 1) {   //options[1] = Flood
-            loggedInUser.setFloodScore(null);
+            loggedInUser.setFloodScore("null");
         }
         
         // update user's scores to array list
@@ -622,38 +610,43 @@ public class MainProgramGUI extends javax.swing.JFrame {
             }
             
         } else if (progress.equals("Failed")){
-            //you fail if score is not 5 AND score is of type String, which means score is not null
+            
             boolean firefail = false;
             boolean floodfail = false;
-            if(!("5").equals(loggedInUser.getFireScore()) && loggedInUser.getFireScore() instanceof String){
+            
+            //you fail if score is not 5 AND score is not null
+            if(!loggedInUser.getFireScore().equals("null") && !"5".equals(loggedInUser.getFireScore())){
                 quizDisplayTA.append(new FireQuiz().getTitle()+"\n");
                 firefail = true;
             }
-            if(!("5").equals(loggedInUser.getFloodScore()) && loggedInUser.getFloodScore() instanceof String){
+            
+            if(!loggedInUser.getFloodScore().equals("null") && !"5".equals(loggedInUser.getFloodScore())){
                 quizDisplayTA.append(new FloodQuiz().getTitle()+"\n");
-                floodfail = true;
+                firefail = true;
             }
+            
+            // if both flags are false, user has not failed any quiz
             if(firefail == false && floodfail == false){
                 quizDisplayTA.setText("You have not failed any quiz");
             }
             
         } else if (progress.equals("Not Taken")){
-            // quiz scores are null by default if user didn't take the quiz
-            if (loggedInUser.getFireScore()==null){
+            // quiz scores are "null" by default if user didn't take the quiz
+            if (loggedInUser.getFireScore().equals("null")){
                 quizDisplayTA.append(new FireQuiz().getTitle()+"\n");
             }
-            if (loggedInUser.getFloodScore()==null){
+            if (loggedInUser.getFloodScore().equals("null")){
                 quizDisplayTA.append(new FloodQuiz().getTitle()+"\n");
             }
             
             //when user starts a quiz, his scores are no longer of type 'null'
-            if (loggedInUser.getFireScore() instanceof String & loggedInUser.getFloodScore() instanceof String){
+            if (!loggedInUser.getFireScore().equals("null") & !loggedInUser.getFloodScore().equals("null")){
                 quizDisplayTA.setText("You took all quizzes");
             }
         }
     }//GEN-LAST:event_progressCBBActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void deleteAccBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAccBTNActionPerformed
         String password = JOptionPane.showInputDialog(null, "Enter your password to delete your account");
         if (password.equals(loggedInUser.getPassword())){
             users.remove(loggedInUser);
@@ -666,7 +659,7 @@ public class MainProgramGUI extends javax.swing.JFrame {
         dispose();
         new WelcomeGUI().setVisible(true);
         JOptionPane.showMessageDialog(null, "Account deleted successfully");
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_deleteAccBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -700,6 +693,7 @@ public class MainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JLabel accountManagerLBL;
     private javax.swing.JPanel accountPN;
     private javax.swing.JButton certFireBTN;
+    private javax.swing.JButton deleteAccBTN;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JTextArea displayTA;
     private javax.swing.JButton fireLessonBTN;
@@ -708,7 +702,6 @@ public class MainProgramGUI extends javax.swing.JFrame {
     private javax.swing.JLabel floodquizLBL;
     private javax.swing.JButton guideBTN;
     private javax.swing.JLabel guideIcon;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton logoutBTN;
