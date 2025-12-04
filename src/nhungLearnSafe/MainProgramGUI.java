@@ -477,10 +477,9 @@ public class MainProgramGUI extends javax.swing.JFrame {
         //check if user has any certificate
         if(!loggedInUser.getFireScore().equals("5") && !loggedInUser.getFloodScore().equals("5")){
             displayTA.setText("You have no certificate to display");
-        }
         
         //if user only has Fire certificate
-        if(loggedInUser.getFireScore().equals("5") && !loggedInUser.getFloodScore().equals("5")){
+        }else if(loggedInUser.getFireScore().equals("5") && !loggedInUser.getFloodScore().equals("5")){
             CertificateGUI cert = new CertificateGUI(loggedInUser, new FireQuiz());
             cert.setVisible(true);
             this.setVisible(false);
@@ -514,31 +513,37 @@ public class MainProgramGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_quitBTNActionPerformed
 
     private void deleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTNActionPerformed
-        //Ask user which quiz they want to delete score
-        String[] options = { "Fire", "Flood" };
-        var selection = JOptionPane.showOptionDialog(null, "Delete score", "Which quiz score do you want to delete?", 
-                                                     0, 2, null, options, options[0]);
-        if (selection == 0) {   //options[0] = Fire
-            loggedInUser.setFireScore("null");
-        }
-        if (selection == 1) {   //options[1] = Flood
-            loggedInUser.setFloodScore("null");
-        }
-        
-        // update user's scores to array list
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUsername().equals(loggedInUser.getUsername())) {
-                users.set(i, loggedInUser); // replace with updated account
-                break;
+        //ì user dóe not have any score to delete
+        if (loggedInUser.getFireScore().equals("null") & loggedInUser.getFloodScore().equals("null")){
+            displayTA.setText("You have no scores to delete");
+            
+        }else{
+            //Ask user which quiz they want to delete score
+            String[] options = { "Fire", "Flood" };
+            var selection = JOptionPane.showOptionDialog(null, "Delete score", "Which quiz score do you want to delete?", 
+                                                         0, 2, null, options, options[0]);
+            if (selection == 0) {   //options[0] = Fire
+                loggedInUser.setFireScore("null");
             }
+            if (selection == 1) {   //options[1] = Flood
+                loggedInUser.setFloodScore("null");
+            }
+
+            // update user's scores to array list
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getUsername().equals(loggedInUser.getUsername())) {
+                    users.set(i, loggedInUser); // replace with updated account
+                    break;
+                }
+            }
+
+            //write arraylist to data file
+            AccountManager.writeToFile(users);
+
+            //display
+            displayTA.setText("Your new scores are: \n");
+            displayTA.append(loggedInUser.viewProgress());
         }
-        
-        //write arraylist to data file
-        AccountManager.writeToFile(users);
-        
-        //display
-        displayTA.setText("Your new scores are: \n");
-        displayTA.append(loggedInUser.viewProgress());
     }//GEN-LAST:event_deleteBTNActionPerformed
 
     private void guideBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guideBTNActionPerformed
