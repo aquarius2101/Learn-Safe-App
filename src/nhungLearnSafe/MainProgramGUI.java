@@ -655,15 +655,15 @@ public class MainProgramGUI extends javax.swing.JFrame {
         String password = JOptionPane.showInputDialog(null, "Enter your password to delete your account");
         if (password.equals(loggedInUser.getPassword())){
             users.remove(loggedInUser);
+            
+            // update data file
+            AccountManager.writeToFile(users);
         }
         
-        // update data file
-        AccountManager.writeToFile(users);
+        // exit the app and display message
+        System.out.println("Account deleted successfully");
+        System.exit(0);
         
-        // go back to Welcome window and display message
-        dispose();
-        new WelcomeGUI().setVisible(true);
-        JOptionPane.showMessageDialog(null, "Account deleted successfully");
     }//GEN-LAST:event_deleteAccBTNActionPerformed
 
     /**
